@@ -25,6 +25,11 @@ Both are MIT-licensed, pure Go, and built with `CGO_ENABLED=0`.
 There is deliberately **no `default`** package or app: these are two unrelated
 tools, so name the one you want.
 
+Built for `x86_64-linux`, `aarch64-linux` and `aarch64-darwin`. Intel macOS
+(`x86_64-darwin`) is absent because nixpkgs 26.11 dropped it — evaluating that
+system throws, so leaving it in `eachDefaultSystem` breaks `flakehub-push`
+even though `nix flake check` passes (it skips systems it cannot build).
+
 ## Use it
 
 ### Run without installing

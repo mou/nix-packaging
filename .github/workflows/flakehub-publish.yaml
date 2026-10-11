@@ -1,14 +1,9 @@
-name: "Publish tags to FlakeHub"
+name: "Publish to FlakeHub"
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      tag:
-        description: "The existing tag to publish to FlakeHub"
-        type: "string"
-        required: true
 jobs:
   flakehub-publish:
     runs-on: "ubuntu-latest"
@@ -19,7 +14,10 @@ jobs:
       - uses: "actions/checkout@v6"
         with:
           persist-credentials: false
-          ref: "${{ (inputs.tag != null) && format('refs/tags/{0}', inputs.tag) || '' }}"
+          # Rolling releases number themselves 0.1.<commit-count>, and
+          # flakehub-push counts commits by walking local history. The default
+          # shallow clone would make every push look like commit 1.
+          fetch-depth: 0
       - uses: "DeterminateSystems/determinate-nix-action@v3"
       - uses: "DeterminateSystems/flakehub-push@main"
         with:

@@ -27,7 +27,15 @@
     {
       overlays.default = overlay;
     }
-    // utils.lib.eachDefaultSystem (system: let
+    # Not eachDefaultSystem: nixpkgs 26.11 dropped x86_64-darwin, and merely
+    # *evaluating* that system now throws. `nix flake check` hides this (it
+    # skips systems the runner cannot build), but flakehub-push evaluates every
+    # output path, so the publish job fails on it.
+    // utils.lib.eachSystem [
+      "x86_64-linux"
+      "aarch64-linux"
+      "aarch64-darwin"
+    ] (system: let
       pkgs = import nixpkgs {
         inherit system;
         overlays = [overlay];
